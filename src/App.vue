@@ -16,9 +16,14 @@ export default {
 </script>
 
 <style lang="sass" module>
-  .section
-    /* Display & Box Model */
-    display: flex
-    min-height: 100vh
-    width: 100vw
+	*
+		/* Display & Box Model */
+		box-sizing: border-box
+	body
+		font-family: 'Roboto', sans-serif
+	.section
+		/* Display & Box Model */
+		display: flex
+		min-height: 100vh
+		width: 100vw
 </style>
