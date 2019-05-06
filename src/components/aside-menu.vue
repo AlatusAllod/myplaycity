@@ -3,18 +3,51 @@
     <header :class="$style.header">
       <img :class="$style.avatar" src="../assets/img/avatar.jpg" alt="David Hill">
       <div :class="$style.info">
-        <h4 :class="$style.username">David Hill</h4>
-        <p :class="$style.status">online</p>
+        <h4 :class="$style.title">David Hill</h4>
+        <p :class="$style.subtitle">online</p>
       </div>
       <button :class="$style['button-add']"></button>
     </header>
+    <main :class="$style.groups">
+      <h4 :class="$style.title">MESSAGES</h4>
+      <p :class="$style.subtitle">history</p>
+      <menu :class="$style.groups">
+        <asideList v-for="value in uniqueCategories" :key="value" :data="value" :issues="issues"></asideList>
+      </menu>
+      <button :class="$style['add-category']" @click="addCategory">+ Add Category</button>
+    </main>
   </aside>
 </template>
 
 <script>
+import asideList from "./aside-list";
+
 export default {
+  data() {
+    return {
+      defaultCategories: ["My Questions", "Messenger", "Community QA", "FAQ"]
+    };
+  },
   props: {
-    asideMenu: Object
+    issues: Array
+  },
+  components: {
+    asideList
+  },
+  computed: {
+    uniqueCategories() {
+      const set = new Set();
+      this.issues.forEach(elem => {
+        set.add(elem.categoryName);
+      });
+      this.defaultCategories.forEach(elem => set.add(elem));
+      return [...set];
+    }
+  },
+  methods: {
+    addCategory() {
+      this.defaultCategories.push("Unnamed category");
+    }
   }
 };
 </script>
@@ -22,17 +55,37 @@ export default {
 <style lang="sass" module>
 	.aside-menu
 		/* Display & Box Model */
-		height: 100vh
+		min-height: 100vh
+		height: 100%
 		width: 300px
 		padding: 20px
 		background-color: rgb(3, 33, 41)
 
 		/* Positioning */
 		position: fixed
+		z-index: 1
+
+		/* Other */
+		overflow-y: auto
 	.header
 		/* Display & Box Model */
 		display: flex
 		align-items: center
+		padding-bottom: 20px
+		margin-bottom: 10px
+
+		/* Positioning */
+		position: relative
+		&::after
+			/* Display & Box Model */
+			content: ''
+			width: 100%
+			height: 1px
+			background: linear-gradient(to left, rgba(white ,.1) 0%, rgba(white ,.3) 50%, rgba(white ,.1) 100%)
+
+			/* Positioning */
+			position: absolute
+			bottom: 0
 	.avatar
 		/* Display & Box Model */
 		width: 50px
@@ -43,7 +96,7 @@ export default {
 	.info
 		/* Display & Box Model */
 		flex: 1
-	.username
+	.title
 		/* Display & Box Model */
 		margin-top: 0
 		margin-bottom: 5px
@@ -51,7 +104,7 @@ export default {
 		/* Text */
 		font-weight: bold
 		color: white
-	.status
+	.subtitle
 		/* Display & Box Model */
 		margin-top: 0
 		margin-bottom: 0
@@ -70,6 +123,14 @@ export default {
 
 		/* Positioning */
 		position: relative
+
+		/* Other */
+		cursor: pointer
+		transition: transform .5s
+		&:hover,
+		&:focus
+			/* Display & Box Model */
+			transform: rotate(180deg) scale(1.1)
 		&::after,
 		&::before
 			/* Display & Box Model */
@@ -84,10 +145,25 @@ export default {
 			position: absolute
 			top: 50%
 			left: 50%
-			
-			/* Other */
-			cursor: pointer
 		&::before
 			/* Display & Box Model */
 			transform: translate(-50%, -50%) rotate(90deg)
+	.groups
+		/* Display & Box Model */
+		padding: 0
+	.add-category
+		/* Display & Box Model */
+		padding: 0
+		border: none
+		background-color: transparent
+
+		/* Text */
+		color: rgba(white, .5)
+
+		/* Other */
+		cursor: pointer
+		&:hover,
+		&:focus
+			/* Display & Box Model */
+			color: white
 </style>
